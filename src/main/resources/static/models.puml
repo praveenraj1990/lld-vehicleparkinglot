@@ -1,0 +1,249 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Contact {
+    String phone;
+    String email;
+    String address;
+}
+
+
+enum AccountStatus {
+    ACTIVE,
+    CLOSED,
+    BLACKLISTED
+}
+
+class Address {
+    String addressLine1;
+    String addressLine2;
+    String addressLine3;
+    String street;
+    String city;
+    String state;
+    String country;
+    String pinCode;
+}
+
+
+class Account {
+    String id;
+    String name;
+    String username;
+    String password;
+    Instant lastAccessed;
+    Contact contact;
+    PersonalInfo personalInfo;
+    AccountStatus accountStatus;
+}
+
+class PersonalInfo {
+    String firstname;
+    String middleName;
+    String lastName;
+    String dob;
+    String initials;
+    Address address;
+}
+
+class ParkingAttendant extends Account{
+    Panel panel;
+}
+
+class Driver extends Account{
+    Vehicle vehicle;
+}
+
+class Vehicle {
+    String id;
+    String licenseNo;
+    VehicleType vehicleType;
+
+}
+
+enum VehicleType {
+    CAR,
+    TRUCK,
+    ELECTRIC,
+    VAN,
+    MOTORBIKE,
+    EBIKE
+}
+
+class Admin extends Account{
+}
+
+
+abstract class Payment {
+    String id;
+    Ticket ticket;
+    ParkingAttendant parkingAttendant;
+    LocalDateTime initiatedDate;
+    LocalDateTime completedDate;
+    double amount;
+    PaymentStatus paymentStatus;
+    PaymentType paymentType;
+}
+
+enum PaymentStatus {
+    CREATED,SUCCESS,FAILED;
+}
+enum PaymentType {
+    CREDIT,
+    DEBIT;
+}
+
+class CardPayment extends Payment{
+}
+
+class DebitPayment extends Payment{
+}
+
+
+
+class ParkingLot <<singleton>>{
+    static ParkingLot parkingLot = new ParkingLot();
+    List<ParkingFloor> list = new ArrayList<>();
+}
+
+class ParkingFloor {
+    String id;
+    String desc;
+    Map<SpotType, ConcurrentLinkedQueue<ParkingSpot>> parkingSpotList = new HashMap<>();
+    Map<String, ParkingSpot> usedParkingSpotList = new HashMap<>();
+    List<Panel> entryPanels = new ArrayList<>();
+    List<Panel> exitPanels = new ArrayList<>();
+    List<DisplayBoard> board;
+}
+
+abstract class Panel {
+    String id;
+    PanelType panelType;
+    abstract void open();
+    abstract void close();
+}
+
+abstract class ParkingSpot {
+    String id;
+    int length;
+    int width;
+    SpotType spotType;
+    Boolean available; //isFree
+    ParkingFloor floor;
+    Vehicle assignedVehicle;
+}
+
+class CarSpot extends ParkingSpot{
+}
+
+class EBikeSpot extends ParkingSpot{
+}
+
+class MotorBikeSpot extends Parkingspot{
+}
+
+class HandicappedParkingSpot extends Parkingspot{
+
+}
+
+enum PanelType {
+    Entry,
+    Exit;
+}
+
+
+class EntryPanel extends Panel {
+
+}
+
+class ExitPanel extends Panel {
+
+}
+
+
+abstract Notification{
+    String id;
+    String content;
+    Driver driver;
+    NotificationType notificationType;
+    Date createdDate;
+    Date deliveredDate;
+}
+
+enum NotificationType {
+    Email,
+    SMS;
+}
+
+
+enum SpotType {
+    HANDICAPPED,
+    CAR,
+    LARGE,
+    MOTORBIKE,
+    ELECTRIC,
+    EBIKE
+
+}
+
+class Ticket {
+    String id;
+    Instant startTime;
+    Instant endTime;
+    ParkingAttendant parkingAttendant;
+    Driver driver;
+    double charges;
+    Panel entryPanel;
+    Panel exitPanel;
+    TicketStatus ticketStatus;
+    TicketType ticketType;
+    ParkingSpot spot;
+}
+
+enum TicketStatus {
+    ACTIVE,PAID,LOST;
+}
+
+enum TicketType {
+    DAILY,
+    HOURLY,
+    MONTHLY;
+}
+
+class DisplayBoard{
+    ParkingFloor floor;
+    String content;
+    void setContent(String content);
+}
+
+class GateFactory {
+    static Panel getGate(PanelType gateType)
+}
+class ParkingSpotFactory {
+    static ParkingSpot getParkingSpot(SpotType spotType)
+}
+class PriceFactory {
+    static PriceCompute getPrice(TicketType ticketType)
+}
+
+class ParkingRate{
+    TicketType ticketType;
+    double charges;
+}
+
+Account *- AccountStatus
+Account *- PersonalInfo
+PersonalInfo *- Address
+PersonalInfo *- Contact
+Ticket *- Driver
+Ticket *- Gate
+Ticket *- ParkingAttendant
+Ticket *- ParkingSpot
+ParkingAttendant *- panel
+Driver *- Vehicle
+Payment  *- Ticket
+Payment *- ParkingAttendant
+ParkingLot *- ParkingFloor
+ParkingFloor *- ParkingSpot
+ParkingFloor *- DisplayBoard
+@enduml

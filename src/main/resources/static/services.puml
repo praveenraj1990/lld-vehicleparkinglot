@@ -1,0 +1,109 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Package UserOperations{
+    interface AdminService {
+        Admin createAdmin(String name);
+        Admin getAdmin(String admin) throws AdminNotfoundException;
+    }
+
+    interface ParkingAttendantService {
+        ParkingAttendant createParkingAttendant(String name, Panel panel);
+        ParkingAttendant getParkingAttendant(String parkingAttendantId) throws ParkingAttendantNotFoundException;
+
+    }
+
+    interface AccountService{
+        boolean validateCredentials(String username, String password);
+    }
+}
+
+Package ParkingOperations{
+    interface ParkingFloorService {
+        ParkingFloor getParkingFloor(String parkingFloorId) throws ParkingFloorNotFoundException;
+        ParkingFloor addFloor(String description);
+        Panel addEntrance(ParkingFloor parkingFloorId, String description);
+        Panel addExit(ParkingFloor parkingFloorId, String description);
+        boolean isFull(ParkingFloor pf);
+        ParkingSpot getParkingSpot(ParkingFloor pf, SpotType spotType);
+        void vacateSpot(ParkingSpot spot);
+    }
+
+    interface ParkingLotService {
+        ParkingSpot getParkingSpot(SpotType spotType) throws ParkingSpotNotAvailableException;
+        void vacateSpot(ParkingSpot spot) throw ParkingSpotInvalidException;
+    }
+
+    interface ParkingSpotService {
+        ParkingSpot addParkingSpot(ParkingFloor pf, SpotType spotType, String desc) ;
+        ParkingSpot getParkingSpot(String parkingSpotId) throws ParkingSpotNotFoundException;
+        void removeParkingSpot(ParkingSpot ps) throws ParkingSpotInvalidException;
+    }
+
+    interface DisplayBoardService{
+            DisplayBoard getDisplayBoard(String displayboardId);
+            DisplayBoard createDisplayBoard(ParkingFloor floor);
+    }
+
+    interface GateService{
+        void openGate();
+        void closeGate();
+    }
+
+
+}
+
+Package PaymentOperations{
+    interface PaymentService{
+        String createPayment(Ticket ticket, PaymentType paymentType, PaymentStatus paymentStatus);
+        Payment getPayment(String paymentId);
+        Payment onPaymentSuccess(Payment payment);
+        Payment onPaymenFailure(Payment payment);
+    }
+
+ interface PaymentStatusCronJobService{
+        void updatePendingPayment();
+    }
+
+
+}
+
+package TicketOperations{
+    interface TicketService {
+        Ticket createTicket(ParkingAttendant user, Vehicle vehicle, Panel panel, TicketType ticketType, ParkingSpot ps);
+        Ticket searchTicket(String ticketId) throws TicketNotFoundException;
+        double getTicketCharges(Ticket ticket);
+        Ticket updateTicketStatus(Ticket ticket, TicketStatus status, Panel panel);
+    }
+
+  interface PriceComputeService {
+        Double compute(Ticket ticket);
+    }
+    class DailyPriceImpl implements PriceComputeService
+    class HourPriceImpl implements PriceComputeService
+
+    interface ParkingRateService{
+       updateParkingRate(TicketType ticketType, double charges);
+    }
+
+}
+
+package NotificationOperations{
+    interface NotificationService{
+        void createNotification(Ticket ticket);
+        Notification getNotification(String notificationId);
+    }
+
+    interface NotificationCronService{
+        void emailNotifications();
+        void smsNotifications();
+    }
+
+}
+
+package UtilityOperations{
+    class MapSpotType {
+        public static List<SpotType> spotTypeApplicableForVehicle(VehicleType vehicleType)
+    }
+}
+@enduml
