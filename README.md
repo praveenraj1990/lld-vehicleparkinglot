@@ -1,3 +1,4 @@
+# Parking Lot
 SOLID:
 S-divide classes
 O-
@@ -7,8 +8,8 @@ D-
 
 Design Pattern:
 Factory ->GateFactory
-          ParkingSpotFactory
-          PriceFactory
+ParkingSpotFactory
+PriceFactory
 Template ->EntryGate
 Singleton -> ParkingLot
 
@@ -27,12 +28,12 @@ Requirement:
 2. Entry is recorded at entry point and payment is done at the time of exit.
 3. Parking lot contains Multiple floors.
 4. Parking floor containts multiple parking slots which are of different types.
-     1. HANDICAPPED
-     2. CAR
-     3. LARGE
-     4. MOTORBIKE
-     5. ELECTRIC
-     6. EBIKE
+    1. HANDICAPPED
+    2. CAR
+    3. LARGE
+    4. MOTORBIKE
+    5. ELECTRIC
+    6. EBIKE
 
 5. Parking is on first come first served basis.
 6. Time is recorded at the time of issuing the ticket in entry panel.
@@ -50,4 +51,9 @@ Requirement:
 18. Attendant can add/modify parking rate
 19. User can get notification by sms or email
 20. Car can fit into multiple spot type
+
+
+TestCases:
+
+
 
